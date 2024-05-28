@@ -8,6 +8,8 @@ import (
 	"os"
 	"os/exec"
 
+	_ "embed"
+
 	bpf "github.com/aquasecurity/libbpfgo"
 )
 
@@ -15,8 +17,11 @@ const (
 	deviceName = "lo"
 )
 
+//go:embed main.bpf.o
+var mainBpfGo []byte
+
 func main() {
-	bpfModule, err := bpf.NewModuleFromFile("main.bpf.o")
+	bpfModule, err := bpf.NewModuleFromBuffer(mainBpfGo, "main.bpf.o")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(-1)
